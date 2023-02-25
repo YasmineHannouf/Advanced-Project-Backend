@@ -38,18 +38,6 @@ class CategoryController extends Controller
   }
 
 
-    try {
-      $category = Category::get();
-      return
-        response()->json(['categories' => $category], 200);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'status' => false,
-        'Error' => $th->getMessage()
-
-      ], 500);
-    }
-  }
 
   public function edit(Request $request, $id)
   {
