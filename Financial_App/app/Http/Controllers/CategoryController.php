@@ -22,8 +22,7 @@ class CategoryController extends Controller
       $category->name = $request->name;
       $category->save();
 
-
-      return response()->json([
+   return response()->json([
         'status' => true,
         'message' => 'Category created.',
         'data' => $category,
@@ -38,9 +37,6 @@ class CategoryController extends Controller
     }
   }
 
-
-  public function show(Request $request)
-  {
 
     try {
       $category = Category::get();
