@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
@@ -12,6 +13,16 @@ Route::Get('/admins',[adminsController::class,'Getadmins']);
 Route::Post('/admins',[adminsController::class,'Postadmins']);
 Route::Patch('/admins/{id}',[adminsController::class,'Editadmins']);
 Route::Delete('/admins/{id}',[adminsController::class,'Deleteadmins']);
+
+
+
+
+// expenses
+Route::get('/expenses', [ExpenseController::class, 'getExpenses']);
+Route::get('/expenses/{id}' ,[ExpenseController::class, 'getExpensesById']);
+Route::post('/expenses', [ExpenseController::class, 'addExpenses']);
+Route::delete('/expenses/{id}', [ExpenseController::class, 'deleteExpenses']);
+Route::put('/expenses/{id}', [ExpenseController::class, 'editExpenses']);
 
 
 Route::post('/categories',[CategoryController::class,'store']);
