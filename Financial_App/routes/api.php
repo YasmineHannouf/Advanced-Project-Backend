@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +20,13 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post('/categories',[CategoryController::class,'store']);
-Route::post('/categories',[CategoryController::class,'store']);
-Route::post('/categories',[CategoryController::class,'store']);
+Route::post('/categories', [CategoryController::class, 'store']);
+Route::post('/categories', [CategoryController::class, 'store']);
+Route::post('/categories', [CategoryController::class, 'store']);
 
-
-
+// expenses
+Route::get('/expenses', [ExpenseController::class, 'getExpenses']);
+Route::get('/expenses/{id}' ,[ExpenseController::class, 'getExpensesById']);
+Route::post('/expenses', [ExpenseController::class, 'addExpenses']);
+Route::delete('/expenses/{id}', [ExpenseController::class, 'deleteExpenses']);
+Route::put('/expenses/{id}', [ExpenseController::class, 'editExpenses']);
