@@ -19,12 +19,12 @@ use Illuminate\Database\Eloquent\Model;
 class Income extends Model
 {
     use HasFactory;
+    protected $guarded = ['id'];
 
     protected $fillable = [
         'title',
         'description',
         'amount',
-        'currency',
         'date_time',
         'category_id',
         'is_recurring',
