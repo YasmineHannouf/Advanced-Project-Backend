@@ -86,7 +86,7 @@ class IncomeController extends Controller
     {
         echo "Hello";
         $request->validate([
-            'title' => 'sometimes|required',
+            'title' => 'sometimes|required|max:20',
             'description' => 'sometimes|required',
             'amount' => 'sometimes|required|numeric',
             'category_id' => 'sometimes|required|exists:categories,id',

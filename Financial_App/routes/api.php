@@ -5,7 +5,6 @@ use App\Http\Controllers\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
-use App\Http\Controllers\
 
 
 
