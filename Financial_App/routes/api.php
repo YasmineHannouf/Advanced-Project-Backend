@@ -5,6 +5,7 @@ use App\Http\Controllers\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
+use App\Http\Controllers\ProfitGoalsController;
 
 
 
@@ -44,3 +45,9 @@ Route::get('/incomes/show/sortByTitleDesc',[IncomeController::class,'sortByTitle
 Route::post('/incomes/store',[IncomeController::class,'addIncome']);
 Route::patch('/incomes/update/{id}',[IncomeController::class,'updateIncome']);
 Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
+
+
+Route::Get('/profit_goals',[ProfitGoalsController::class,'Get_Profit_Goals']);
+Route::Post('/profit_goals',[ProfitGoalsController::class,'Post_Profit_Goals']);
+Route::Delete('/profit_goals/{id}',[ProfitGoalsController::class,'Delete_Profit_Goals']);
+Route::patch('/profit_goals/{id}',[ProfitGoalsController::class,'Edit_Profit_Goals']);
