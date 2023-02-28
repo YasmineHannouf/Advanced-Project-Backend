@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\IncomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
@@ -44,3 +45,16 @@ Route::get('/incomes/show/sortByTitleDesc',[IncomeController::class,'sortByTitle
 Route::post('/incomes/store',[IncomeController::class,'addIncome']);
 Route::patch('/incomes/update/{id}',[IncomeController::class,'updateIncome']);
 Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
+
+
+
+Route::post('/login',[adminsController::class,'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/logout',[adminsController::class,'logout']);
+
+    Route::get("/get",function(){
+        return 'AUTH ROUTE';
+        });
+});
