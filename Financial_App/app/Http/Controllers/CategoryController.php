@@ -112,4 +112,19 @@ class CategoryController extends Controller
       ], 500);
     }
   }
+
+  public function show()
+  {
+    try {
+      $nameByDesc = Category::get();
+      return response()->json(['Status' => true, 'CategoryByDesc' => $nameByDesc], 200);
+
+    } catch (\Throwable $th) {
+      return response()->json([
+        'status' => false,
+        'Error' => $th->getMessage()
+
+      ], 500);
+    }
+  }
 }

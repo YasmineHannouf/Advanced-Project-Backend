@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ReccuringController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
@@ -36,13 +36,13 @@ Route::get('/categories/sortByNameAsc',[CategoryController::class,'sortByNameAsc
 
 //Incomes routes
 
-Route::get('/incomes/show',[IncomeController::class,'getIncomes']);
+Route::get('/incomes/show',[ReccuringController::class,'getIncomes']);
 Route::get('/incomes/show/sortByDateAsc',[IncomeController::class,'sortByDateAsc']);
 Route::get('/incomes/show/sortByDateDesc',[IncomeController::class,'sortByDateDesc']);
 Route::get('/incomes/show/sortByAmountDesc',[IncomeController::class,'sortByAmountDesc']);
 Route::get('/incomes/show/sortByTitleDesc',[IncomeController::class,'sortByTitleDesc']);
 
-Route::post('/incomes/store',[IncomeController::class,'addIncome']);
+Route::post('/recc/store',[ReccuringController::class,'create']);
 Route::patch('/incomes/update/{id}',[IncomeController::class,'updateIncome']);
 Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
 
@@ -50,7 +50,7 @@ Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
 
 Route::post('/login',[adminsController::class,'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('authy')->group(function () {
 
     Route::get('/logout',[adminsController::class,'logout']);
 

@@ -17,6 +17,11 @@ class adminsController extends Controller
     {
         try {
             $admin = Admins::get();
+
+            if(empty($admin)){return response()->json([
+        'status' => false,
+        'message' => 'No Admin found',
+    ], 404);}
             return response()->json([
                 "message" => $admin,
             ], 200);

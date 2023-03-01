@@ -4,58 +4,65 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\FixedModel;
+use Illuminate\Validation\ValidationException;
 
 class FixedController extends Controller
 {
     public function addFixed(Request $request)
-    {
-        $expense = new FixedModel ;
-        $title = $request->input('title');
-        $description = $request->input('description');
-        $amount = $request->input('amount');
-        $currency = $request->input('currency');
-        $date_time = $request->input('date_time');
-        $category_id = $request->input('category_id');
-        $is_recurring = $request->input('is_recurring');
-        $start_date = $request->input('start_date');
-        $end_date = $request->input('end_date');
+{
+    try {
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'date_time' => 'required|date',
+            'is_paid' => 'required|boolean',
+            'type' => 'required|in:inc,exp',
+            'scheduled_date' => 'required|in:year,month,week,day,hour,minute,second'
+        ]);
 
-        $expense->title = $title;
-        $expense->description = $description;
-        $expense->amount = $amount;
-        $expense->currency = $currency;
-        $expense->date_time = $date_time;
-        $expense->category_id = $category_id;
-        $expense->is_recurring = $is_recurring;
-        $expense->start_date = $start_date;
-        $expense->end_date = $end_date;
-        $expense->save();
+        $fixed = FixedModel::create($validatedData);
 
         return response()->json([
-            "message " => $expense
+            "message " => $fixed
         ]);
+    } catch (ValidationException $e) {
+        return response()->json(['errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
+public function deleteFixed($id)
+{
+    $fixed = FixedModel::find($id);
+
+    if (!$fixed) {
+        return response()->json(['error' => $id.' not found'], 404);
     }
 
-    public function deleteFixed($id)
-    {
-        $Fixed = FixedModel::find($id);
-
-        $Fixed->delete();
-
-        return response()->json([
-            'message' => 'delete succs'
-        ]);
+    try {
+        $fixed->delete();
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to delete fixed'], 500);
     }
-    public function editFixed(Request $request, $id)
-    {
-        $fixed = FixedModel::find($id);
-        $inputs = $request->except('_method');
-        $fixed->update($inputs);
-        return response()->json([
-            'message' => 'fixed expenses updated successfully',
-            'fixedExpenses' => $fixed,
-        ]);
-    }
+
+    return response()->json([
+        'message' => 'Fixed deleted successfully'
+    ]);
+}
+
+public function editFixed(Request $request, $id)
+{
+    $fixed = FixedModel::find($id);
+    $inputs = $request->except('_method');
+    $fixed->update($inputs);
+    return response()->json([
+        'message' => 'fixed expenses updated successfully',
+        'fixedExpenses' => $fixed,
+    ]);
+}
     //get all expenses
     public function getFixed()
     {
