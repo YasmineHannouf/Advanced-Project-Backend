@@ -47,10 +47,14 @@ Route::patch('/incomes/update/{id}',[IncomeController::class,'updateIncome']);
 Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
 
 
+Route::get('/fixed/filter/{filter}/{value}', [FixedController::class, 'filter']);
+
+
+
 
 Route::post('/login',[adminsController::class,'login']);
 
-Route::middleware('authy')->group(function () {
+Route::middleware('auth')->group(function () {
 
     Route::get('/logout',[adminsController::class,'logout']);
 

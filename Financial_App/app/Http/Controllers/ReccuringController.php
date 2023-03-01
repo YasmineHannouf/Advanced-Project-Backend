@@ -73,6 +73,7 @@ class ReccuringController extends Controller
             $recurring->date_time = now();
             $recurring->category_id = $request->category_id;
             $recurring->category()->associate("category_id");
+            
             $recurring->save();
             return response()->json([
                 'message' => 'Recurring expense/income created successfully!',
@@ -239,4 +240,87 @@ class ReccuringController extends Controller
             ], 404);
         }
     }
+
+
+    public function getFixedById($id)
+    {
+        try {
+            $fixed = Reccuring::find($id);
+
+            if (!$fixed) {
+                return response()->json([
+                    'error' => 'Fixed expense not found',
+                ], 404);
+            }
+
+            return response()->json([
+                'fixed' => $fixed,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An error occurred while fetching fixed expense',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function getByKeyId($keyId)
+    {
+        try {
+            $fixed = Reccuring::where('key_id', $keyId)->get();
+    
+            if ($fixed->isEmpty()) {
+                return response()->json([
+                    'error' => 'No fixed expenses found with the specified key_id',
+                ], 404);
+            }
+    
+            return response()->json([
+                'fixed' => $fixed,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An error occurred while fetching fixed expenses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
+    public function getByTitle($title)
+{
+    try {
+        $fixed = Reccuring::where('title', $title)->get();
+
+        if ($fixed->isEmpty()) {
+            return response()->json([
+                'error' => 'No fixed expenses found with the specified title',
+            ], 404);
+        }
+
+        return response()->json([
+            'fixed' => $fixed,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'An error occurred while fetching fixed expenses',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
+    public function filter($filter, $value)
+{
+    switch ($filter) {
+        case 'title':
+            return $this->getByTitle($value);
+        case 'key_id':
+            return $this->getByKeyId($value);
+        case 'id':
+         return $this->getFixedById($value);
+        default:
+            return response()->json([
+                'error' => 'Invalid filter specified',
+            ], 400);
+    }
+}
 }
