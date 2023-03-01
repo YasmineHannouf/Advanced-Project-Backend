@@ -8,7 +8,7 @@ use App\Models\Reccuring;
 
 class ReccuringController extends Controller
 {
-    public function getRecurring(Request $request)
+    public function show(Request $request)
     {
         try {
             $Recurring = Reccuring::with('category')->get();
@@ -32,9 +32,9 @@ class ReccuringController extends Controller
 
     }
 
- 
-    
-    public function create(Request $request)
+
+
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:20',
@@ -59,7 +59,7 @@ class ReccuringController extends Controller
             'type.required' => 'The type field is required.',
             'type.in' => 'The type field must be one of the following values: inc, exp.',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -67,7 +67,7 @@ class ReccuringController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
-    
+
         try {
             $recurring = new Reccuring($request->all());
             $recurring->date_time = now();
@@ -86,9 +86,9 @@ class ReccuringController extends Controller
             ]);
         }
     }
-    
 
-    public function updateRecurring(Request $request, $id)
+
+    public function edit(Request $request, $id)
 {
     $request->validate([
         'title' => 'sometimes|required|max:20',
@@ -144,20 +144,20 @@ class ReccuringController extends Controller
     }
 }
 
-    public function deleteIncome(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         try {
-            $income = Reccuring::findOrFail($id);
-            $income->delete();
+            $reccuring = Reccuring::findOrFail($id);
+            $reccuring->delete();
             return response()->json([
                 'status' => true,
-                'Message' => 'Successfully deleted income'
+                'Message' => 'Successfully deleted reccuring'
 
             ], 200);
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted income',
+                'message' => 'Error while deleted reccuring',
                 'error' => $err->getMessage(),
             ], 404);
         }
