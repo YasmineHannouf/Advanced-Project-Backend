@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Reccuring;
+use App\Models\Category;
 
 class ReccuringController extends Controller
 {
@@ -72,8 +73,10 @@ class ReccuringController extends Controller
             $recurring = new Reccuring($request->all());
             $recurring->date_time = now();
             $recurring->category_id = $request->category_id;
-            $recurring->category()->associate("category_id");
-            
+
+            $category = Category::findOrFail($request->category_id);
+            $recurring->category()->associate($category);
+
             $recurring->save();
             return response()->json([
                 'message' => 'Recurring expense/income created successfully!',
@@ -267,13 +270,13 @@ class ReccuringController extends Controller
     {
         try {
             $fixed = Reccuring::where('key_id', $keyId)->get();
-    
+
             if ($fixed->isEmpty()) {
                 return response()->json([
                     'error' => 'No fixed expenses found with the specified key_id',
                 ], 404);
             }
-    
+
             return response()->json([
                 'fixed' => $fixed,
             ]);
@@ -284,7 +287,7 @@ class ReccuringController extends Controller
             ], 500);
         }
     }
-    
+
     public function getByTitle($title)
 {
     try {

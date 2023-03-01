@@ -11,7 +11,7 @@ use App\Http\Controllers\adminsController;
 
 Route::Get('/admins',[adminsController::class,'Getadmins']);
 Route::Post('/admins',[adminsController::class,'Postadmins']);
-Route::Patch('/admins/{id}',[adminsController::class,'Editadmins']);
+Route::Put('/admins/{id}',[adminsController::class,'Editadmins']);//need fixed
 Route::Delete('/admins/{id}',[adminsController::class,'Deleteadmins']);
 
 
@@ -34,17 +34,13 @@ Route::get('/categories/sortByNameAsc',[CategoryController::class,'sortByNameAsc
 
 
 
-//Incomes routes
+//Reccuring routes
 
-Route::get('/incomes/show',[ReccuringController::class,'getIncomes']);
-Route::get('/incomes/show/sortByDateAsc',[IncomeController::class,'sortByDateAsc']);
-Route::get('/incomes/show/sortByDateDesc',[IncomeController::class,'sortByDateDesc']);
-Route::get('/incomes/show/sortByAmountDesc',[IncomeController::class,'sortByAmountDesc']);
-Route::get('/incomes/show/sortByTitleDesc',[IncomeController::class,'sortByTitleDesc']);
+Route::get('/reccurings/show',[ReccuringController::class,'show']);
 
-Route::post('/recc/store',[ReccuringController::class,'create']);
-Route::patch('/incomes/update/{id}',[IncomeController::class,'updateIncome']);
-Route::delete('/incomes/delete/{id}',[IncomeController::class,'deleteIncome']);
+Route::post('/reccurings/store',[ReccuringController::class,'store']);
+Route::patch('/reccurings/update/{id}',[ReccuringController::class,'edit']);
+Route::delete('/reccurings/delete/{id}',[ReccuringController::class,'delete']);
 
 
 Route::get('/fixed/filter/{filter}/{value}', [FixedController::class, 'filter']);
