@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
 use App\Http\Controllers\FixedController;
+use App\Http\Controllers\Fixedkeys;
 
 
 
@@ -53,6 +54,14 @@ Route::get('/fixed/show',[FixedController::class,'show']);
 Route::get('/fixed/show/{id}',[FixedController::class,'getFixedById']);
 Route::get('/fixed/show/key={}',[FixedController::class,'getByKeyId']);
 Route::get('/fixed/show/title',[FixedController::class,'getByTitle']);
+
+//Fixed Key
+Route::get('/Fixedkeys/show',[Fixedkeys::class,'show']);
+Route::post('/Fixedkeys/store',[Fixedkeys::class,'store']);
+Route::patch('/Fixedkeys/update/{id}',[Fixedkeys::class,'edit']);
+Route::delete('/Fixedkeys/delete/{id}',[Fixedkeys::class,'delete']);
+Route::get('/Fixedkeys/sortByNameDesc/{id}',[Fixedkeys::class,'sortByNameDesc']);
+Route::get('/Fixedkeys/sortByNameAsc/{id}',[Fixedkeys::class,'sortByNameAsc']);
 
 
 

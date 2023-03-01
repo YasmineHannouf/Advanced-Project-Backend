@@ -5,8 +5,23 @@ use App\Models\Fixed_keys;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 
-class FixedController extends Controller
+class Fixedkeys extends Controller
 {
+    public function show()
+  {
+    try {
+      $nameByDesc = Fixed_keys::get();
+      return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
+
+    } catch (\Throwable $th) {
+      return response()->json([
+        'status' => false,
+        'Error' => $th->getMessage()
+
+      ], 500);
+    }
+  }
+
   public function store(Request $request)
   {
     try {
