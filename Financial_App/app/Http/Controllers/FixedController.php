@@ -18,7 +18,6 @@ class FixedController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
                 'amount' => 'required|numeric',
-                'date_time' => 'required|date',
                 'category_id' => 'required|integer',
                 'key_id' => 'required|integer',
                 'is_paid' => 'required|boolean',
@@ -26,13 +25,13 @@ class FixedController extends Controller
                 'scheduled_date' => 'required|in:year,month,week,day,hour,minute,second'
             ]);
             $validatedData = $request->except('_method');
-            
+
             $validatedData['date_time'] = now();
             $fixed = FixedModel::create($validatedData);
-            $fixed->category_id = $request->category_id;
-            $fixed->category()->associate("category_id");  
-            $fixed->category_id = $request->category_id;
-            $fixed->fix()->associate("key_id");
+            // $fixed->category_id = $request->category_id;
+            // $fixed->category()->associate("category_id");
+            // $fixed->category_id = $request->category_id;
+            // $fixed->fix()->associate("key_id");
 
             return response()->json([
                 "message " => $fixed
@@ -120,7 +119,7 @@ class FixedController extends Controller
             return response()->json([
                 'fixed' => $fixed,
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => 'An error occurred while fetching fixed expenses',
                 'message' => $e->getMessage(),
@@ -154,13 +153,13 @@ class FixedController extends Controller
     {
         try {
             $fixed = FixedModel::where('key_id', $keyId)->get();
-    
+
             if ($fixed->isEmpty()) {
                 return response()->json([
                     'error' => 'No fixed expenses found with the specified key_id',
                 ], 404);
             }
-    
+
             return response()->json([
                 'fixed' => $fixed,
             ]);
@@ -171,7 +170,7 @@ class FixedController extends Controller
             ], 500);
         }
     }
-    
+
     public function getByTitle($title)
 {
     try {

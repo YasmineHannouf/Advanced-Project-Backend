@@ -6,6 +6,7 @@ use App\Http\Controllers\ReccuringController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
+use App\Http\Controllers\FixedController;
 
 
 
@@ -41,6 +42,18 @@ Route::get('/reccurings/show',[ReccuringController::class,'show']);
 Route::post('/reccurings/store',[ReccuringController::class,'store']);
 Route::patch('/reccurings/update/{id}',[ReccuringController::class,'edit']);
 Route::delete('/reccurings/delete/{id}',[ReccuringController::class,'delete']);
+
+
+
+//Fixed routes
+Route::post('/fixed/store',[FixedController::class,'store']);
+Route::delete('/fixed/delete/{id}',[FixedController::class,'delete']);
+Route::patch('/fixed/update/{id}',[FixedController::class,'edit']);
+Route::get('/fixed/show',[FixedController::class,'show']);
+Route::get('/fixed/show/{id}',[FixedController::class,'getFixedById']);
+Route::get('/fixed/show/key={}',[FixedController::class,'getByKeyId']);
+Route::get('/fixed/show/title',[FixedController::class,'getByTitle']);
+
 
 
 Route::get('/fixed/filter/{filter}/{value}', [FixedController::class, 'filter']);
