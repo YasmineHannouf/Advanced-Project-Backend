@@ -1,9 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\reccuringModel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Validator;
+//use Illuminate\Validation\Rule;
+//use Illuminate\Http\Request;
 use App\Models\Reccuring;
 use App\Models\Category;
 
@@ -12,6 +18,7 @@ class ReccuringController extends Controller
     public function show(Request $request)
     {
         try {
+           // $Recurring = reccuringModel::with('category')->get();
             $Recurring = Reccuring::with('category')->paginate(10);
             return response()->json([
                 'status' => true,
@@ -70,6 +77,76 @@ class ReccuringController extends Controller
         }
 
         try {
+            $recurring = new reccuringModel($request->all());
+            $recurring->date_time = now();
+            $recurring->category_id = $request->category_id;
+            $recurring->save();
+            return response()->json([
+                'message' => 'Recurring expense/income created successfully!',
+                'data' => $recurring
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error while creating recurring expense/income',
+                'error' => $th->getMessage(),
+            ],500);
+        }
+    }
+
+    public function updateRecurring(Request $request, $id)
+    {
+        echo "Hello";
+        $request->validate([
+            'title' => 'sometimes|required|max:20',
+            'description' => 'sometimes|required',
+            'amount' => 'sometimes|required|numeric',
+            'category_id' => 'sometimes|required|exists:categories,id',
+            'is_recurring' => 'sometimes|required|boolean',
+            'start_date' => 'sometimes|required|date',
+            'end_date' => 'sometimes|required|date|after_or_equal:start_date',
+        ]);
+
+
+        try {
+            $Recurring = reccuringModel::findOrFail($id);
+
+            $updateFields = [];
+
+            if ($request->has('title')) {
+                $updateFields['title'] = $request->input('title');
+            }
+            if ($request->has('description')) {
+                $updateFields['description'] = $request->input('description');
+            }
+            if ($request->has('amount')) {
+                $updateFields['amount'] = $request->input('amount');
+            }
+            if ($request->has('category_id')) {
+                $updateFields['category_id'] = $request->category_id;
+            }
+            if ($request->has('is_recurring')) {
+                $updateFields['is_recurring'] = $request->input('is_recurring');
+            }
+            if ($request->has('start_date')) {
+                $updateFields['start_date'] = $request->input('start_date');
+            }
+            if ($request->has('end_date')) {
+                $updateFields['end_date'] = $request->input('end_date');
+            }
+
+            $Recurring->update($updateFields);
+
+            $updatedFields = $Recurring->fresh();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Error while creating recurring income',
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        try {
             $recurring = new Reccuring($request->all());
             $recurring->date_time = now();
             $recurring->category_id = $request->category_id;
@@ -79,6 +156,16 @@ class ReccuringController extends Controller
 
             $recurring->save();
             return response()->json([
+                'status' => true,
+                'message' => 'Recurring updated successfully',
+                'data' => $updatedFields,
+            ], 201);
+        } catch (\Exception $err) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error while updating Recurring',
+                'error' => $err->getMessage(),
+            ], 500);
                 'data' => $recurring
             ], 200);
         } catch (\Throwable $th) {
@@ -145,6 +232,14 @@ class ReccuringController extends Controller
             'error' => $err->getMessage(),
         ], 500);
     }
+    public function deleteRecurring(Request $request, $id)
+    {
+        try {
+            $Recurring = Reccuring::findOrFail($id);
+            $Recurring->delete();
+            return response()->json([
+                'status' => true,
+                'Message' => 'Successfully deleted Recurring'
 }
 
     public function delete(Request $request, $id)
@@ -160,7 +255,8 @@ class ReccuringController extends Controller
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted reccuring',
+                'message' => 'Error while deleted Recurring',
+
                 'error' => $err->getMessage(),
             ], 404);
         }
@@ -169,6 +265,7 @@ class ReccuringController extends Controller
     public function sortByDateAsc(Request $request)
     {
         try {
+
             $res = Reccuring::orderBy('date_time', 'asc')
                 ->get();
             return response()->json([
@@ -179,7 +276,7 @@ class ReccuringController extends Controller
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted income',
+                'message' => 'Error while deleted Recurring',
                 'error' => $err->getMessage(),
             ], 404);
         }
@@ -188,6 +285,8 @@ class ReccuringController extends Controller
     public function sortByDateDesc(Request $request)
     {
         try {
+
+
             $res = Reccuring::orderBy('date_time', 'desc')
                 ->get();
             return response()->json([
@@ -198,7 +297,7 @@ class ReccuringController extends Controller
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted income',
+                'message' => 'Error while deleted Recurring',
                 'error' => $err->getMessage(),
             ], 404);
         }
@@ -207,6 +306,7 @@ class ReccuringController extends Controller
     public function sortByAmountDesc(Request $request)
     {
         try {
+
             $res = Reccuring::orderBy('amount', 'desc')
                 ->get();
             return response()->json([
@@ -217,7 +317,7 @@ class ReccuringController extends Controller
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted income',
+                'message' => 'Error while deleted Recurring',
                 'error' => $err->getMessage(),
             ], 404);
         }
@@ -227,6 +327,7 @@ class ReccuringController extends Controller
     public function sortByTitleDesc(Request $request)
     {
         try {
+
             $res = Reccuring::orderBy('title', 'desc')
                 ->get();
             return response()->json([
@@ -237,7 +338,7 @@ class ReccuringController extends Controller
         } catch (\Throwable $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while deleted income',
+                'message' => 'Error while deleted Recurring',
                 'error' => $err->getMessage(),
             ], 404);
         }

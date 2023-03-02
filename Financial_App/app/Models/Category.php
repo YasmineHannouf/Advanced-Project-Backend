@@ -16,7 +16,7 @@ class Category extends Model
     ];
     public function ReccuringCategory()
     {
-        return $this->hasMany(RecurringModel::class);
+        // return $this->hasMany(RecurringModel::class);
     }    public function FixedCategory()
     {
         return $this->hasMany(FixedModel::class);

@@ -181,6 +181,5 @@ class adminsController extends Controller
         return response(['Message' => "Good Bye"])->withCookie($cookie);
     }
 }
- 
-}
+
 

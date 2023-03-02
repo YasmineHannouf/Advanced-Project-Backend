@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+
 use App\Http\Controllers\ReccuringController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,18 @@ Route::patch('/reccurings/update/{id}',[ReccuringController::class,'edit']);
 Route::delete('/reccurings/delete/{id}',[ReccuringController::class,'delete']);
 
 
+//Recurring routes
+
+Route::get('/reccurings/show',[ReccuringController::class,'getRecurring']);
+Route::get('/reccurings/show/sortByDateAsc',[ReccuringController::class,'sortByDateAsc']);
+Route::get('/reccurings/show/sortByDateDesc',[ReccuringController::class,'sortByDateDesc']);
+Route::get('/reccurings/show/sortByAmountDesc',[ReccuringController::class,'sortByAmountDesc']);
+Route::get('/reccurings/show/sortByTitleDesc',[ReccuringController::class,'sortByTitleDesc']);
+
+Route::Post('/reccurings/store',[ReccuringController::class,'createReccuring']);
+Route::patch('/reccurings/update/{id}',[ReccuringController::class,'updateRecurring']);
+Route::delete('/reccurings/delete/{id}',[ReccuringController::class,'deleteRecurring']);
+
 
 //Fixed routes
 Route::post('/fixed/store',[FixedController::class,'store']);
@@ -65,6 +78,9 @@ Route::post('api/login', 'AuthController@login')->name('api/login');
 
 
 
+    Route::get("/get",function(){
+        return 'AUTH ROUTE';
+        });
 Route::Get('/profit_goals',[ProfitGoalsController::class,'Get_Profit_Goals']);
 Route::Post('/profit_goals',[ProfitGoalsController::class,'Post_Profit_Goals']);
 Route::Delete('/profit_goals/{id}',[ProfitGoalsController::class,'Delete_Profit_Goals']);
