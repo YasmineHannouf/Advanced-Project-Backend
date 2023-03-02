@@ -37,12 +37,12 @@ class adminsController extends Controller
     public function login(Request $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response(['message' => 'Invalid credentials!' . $request->password], Response::HTTP_UNAUTHORIZED);
+            return response(['message' => 'Invalid credentials!' ], Response::HTTP_UNAUTHORIZED);
         }
 
         $admin = Auth::user();
         $token = $admin->createToken('token')->plainTextToken;
-        $cookie = cookie('jwt', $token, 60 * 24);
+        $cookie = cookie('Authorisation', $token, 60 * 24);
 
         return response(['message' => 'success', 'admin' => $admin], 200)->withCookie($cookie);
 
@@ -180,4 +180,5 @@ class adminsController extends Controller
         $cookie = Cookie::forget('jwt');
         return response(['Message' => "Good Bye"])->withCookie($cookie);
     }
+ 
 }
