@@ -26,11 +26,11 @@ class FixedController extends Controller
                 'scheduled_date' => 'required|in:year,month,week,day,hour,minute,second'
             ]);
             $validatedData = $request->except('_method');
-            
+
             $validatedData['date_time'] = now();
             $fixed = FixedModel::create($validatedData);
             $fixed->category_id = $request->category_id;
-            $fixed->category()->associate("category_id");  
+            $fixed->category()->associate("category_id");
             $fixed->category_id = $request->category_id;
             $fixed->fix()->associate("key_id");
 
@@ -109,7 +109,7 @@ class FixedController extends Controller
     public function show() //get Fixed
     {
         try {
-            $fixed = FixedModel::all();
+            $fixed = FixedModel::paginate(10);             //all()
 
             if ($fixed->isEmpty()) {
                 return response()->json([
@@ -154,13 +154,13 @@ class FixedController extends Controller
     {
         try {
             $fixed = FixedModel::where('key_id', $keyId)->get();
-    
+
             if ($fixed->isEmpty()) {
                 return response()->json([
                     'error' => 'No fixed expenses found with the specified key_id',
                 ], 404);
             }
-    
+
             return response()->json([
                 'fixed' => $fixed,
             ]);
@@ -171,7 +171,7 @@ class FixedController extends Controller
             ], 500);
         }
     }
-    
+
     public function getByTitle($title)
 {
     try {

@@ -26,12 +26,11 @@ Route::put('/expenses/{id}', [ExpenseController::class, 'editExpenses']);
 
 
 Route::post('/categories',[CategoryController::class,'store']);
-Route::get('/categories',[CategoryController::class,'show']);
+Route::get('/categories',[CategoryController::class,'showPcategory']);
 Route::patch('/categories/edit/{id}',[CategoryController::class,'edit']);
 Route::delete('/categories/delete/{id}',[CategoryController::class,'delete']);
 Route::get('/categories/sortByNameDesc',[CategoryController::class,'sortByNameDesc']);
 Route::get('/categories/sortByNameAsc',[CategoryController::class,'sortByNameAsc']);
-
 
 
 //Reccuring routes
