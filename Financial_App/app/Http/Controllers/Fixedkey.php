@@ -1,23 +1,39 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Fixed_keys;
+use App\Models\Fixedkey as Fixedkeys;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 
-class FixedController extends Controller
+class Fixedkey extends Controller
 {
+    public function show()
+  {
+    try {
+      $nameByDesc = Fixedkeys::get();
+      return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
+
+    } catch (\Throwable $th) {
+      return response()->json([
+        'status' => false,
+        'Error' => $th->getMessage()
+
+      ], 500);
+    }
+  }
+
   public function store(Request $request)
   {
     try {
       $request->validate([
 
         'name' => 'required|string|max:255',
-        'is_active' => 'required|string|max:255',
+        // 'is_active' => 'required|string|max:255',
       ]);
 
-      $Fixed_keys = new Fixed_keys;
+      $Fixed_keys = new Fixedkeys;
       $Fixed_keys->name = $request->name;
+      $Fixed_keys->is_active = $request->is_active;
       $Fixed_keys->save();
 
    return response()->json([
@@ -43,7 +59,7 @@ class FixedController extends Controller
     try {
       $updateFields = [];
       $updateFields['name'] = $request->input('name');
-      $Fixed_keys = Fixed_keys::findorFail($id);
+      $Fixed_keys = Fixedkeys::findorFail($id);
       $Fixed_keys->update($updateFields);
       echo $Fixed_keys;
       $updateFields = $Fixed_keys->fresh();
@@ -68,7 +84,7 @@ class FixedController extends Controller
   {
 
     try {
-      $Fixed_keys = Fixed_keys::findorFail($id);
+      $Fixed_keys = Fixedkeys::findorFail($id);
       $Fixed_keys->delete();
       return response()->json(['Status' => true, 'Message' => 'Deleted Successfully'], 200);
     } catch (\Throwable $th) {
@@ -84,7 +100,7 @@ class FixedController extends Controller
   public function sortByNameDesc()
   {
     try {
-      $nameByDesc = Fixed_keys::orderBy('name', 'desc')->get();
+      $nameByDesc = Fixedkeys::orderBy('name', 'desc')->get();
       return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
 
     } catch (\Throwable $th) {
@@ -99,7 +115,7 @@ class FixedController extends Controller
   public function sortByNameAsc()
   {
     try {
-      $nameByDesc = Fixed_keys::orderBy('name', 'Asc')->get();
+      $nameByDesc = Fixedkeys::orderBy('name', 'Asc')->get();
       return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
 
     } catch (\Throwable $th) {

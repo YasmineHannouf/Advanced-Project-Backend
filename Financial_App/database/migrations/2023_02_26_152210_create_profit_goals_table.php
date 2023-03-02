@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fixedKeys', function (Blueprint $table){
+        Schema::create('profit_goals', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->boolean('is_active')->default(true);
+            $table->integer('year');
+            $table->decimal('goal', 10, 2);
+            $table->datetime('start_date')->nullable();
+            $table->datetime('end_date')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fixedKeys');
+        Schema::dropIfExists('profit_goals');
     }
 };

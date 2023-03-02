@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RecurringModel extends Model
+class Reccuring extends Model
 {
+    // use HasFactory;
     use HasFactory;
-    protected $guarded = ['id'];
 
     protected $fillable = [
         'title',
@@ -25,6 +25,4 @@ class RecurringModel extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    
-    
 }
