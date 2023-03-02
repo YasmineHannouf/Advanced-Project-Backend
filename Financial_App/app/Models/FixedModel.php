@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class FixedModel extends Model
 {
     use HasFactory;
+ protected $table = 'fixes';
+
     protected $fillable = [
         'title',
         'description',
@@ -26,7 +28,7 @@ class FixedModel extends Model
     }
     public function fix()
     {
-        return $this->belongsTo(Fixed_keys::class);
+        return $this->belongsTo(Fixedkey::class);
     }
 
 }

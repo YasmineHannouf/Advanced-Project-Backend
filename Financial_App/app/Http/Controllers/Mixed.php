@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 class Mixed extends Controller
 {
     public function getAllReccAndFix (){
-$reccuring = [adminsController::class,'Getadmins'];
-$fixed = [adminsController::class,'Getadmins'];
+$reccuring = [ReccuringController::class,'show'];
+$fixed = [FixedController::class,'show'];
 
         return response()->json(
             [

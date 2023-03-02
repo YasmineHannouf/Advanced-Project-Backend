@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
 use App\Models\FixedModel;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use App\Htpp\Controllers\ReccuringController ;
+// use Illuminate\Console\Scheduling\Schedule;
+
 
 class FixedController extends Controller
 {
-    public function store(Request $request)
-    {
 
+    public function store(Request $request, Schedule $schedule)
+    {
         try {
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
@@ -22,26 +26,107 @@ class FixedController extends Controller
                 'key_id' => 'required|integer',
                 'is_paid' => 'required|boolean',
                 'type' => ['required', Rule::in(['inc', 'exp'])],
-                'scheduled_date' => 'required|in:year,month,week,day,hour,minute,second'
+                'schedule_date' => 'required|in:year,month,week,day,hour'
             ]);
-            $validatedData = $request->except('_method');
-
-            $validatedData['date_time'] = now();
-            $fixed = FixedModel::create($validatedData);
-            // $fixed->category_id = $request->category_id;
-            // $fixed->category()->associate("category_id");
-            // $fixed->category_id = $request->category_id;
-            // $fixed->fix()->associate("key_id");
-
-            return response()->json([
-                "message " => $fixed
-            ]);
+            $validatedData['date_time']= now();
+            $record = new FixedModel($validatedData);
+            $record->save();
+        
+            if ($validatedData['schedule_date'] == "hour") {
+                $record=[];
+                $schedule->call(function () use ($validatedData) {
+                    $validatedData['date_time'] = 
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                    
+                })->hourly();
+                return response()->json([
+                    "message" => $record
+                ],200);
+            }
+            
+            if ($validatedData['schedule_date'] == "day") {
+                $record=[];
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+              
+                })->daily();
+                return response()->json([
+                    "message" => "record"
+                ],200);
+            }
+            
+            if ($validatedData['schedule_date'] == "month") {
+                $schedule->call(function () {
+                    $record = new FixedModel;
+                    $record->save();
+                    return response()->json([
+                        "message" => $record
+                    ]);
+                })->monthly();
+            }
+      
+            if ($validatedData['schedule_date'] == "week") {
+                $record=[];
+                $schedule->call(function () {
+                    $record = new FixedModel;
+                    $record->save();
+                   
+                })->weekdays();
+                
+            }
+      
+            if ($validatedData['schedule_date'] == "year") {
+                $record=[];
+                $schedule->call(function () {
+                    $record = new FixedModel;
+                    $record->save();
+                    return response()->json([
+                        "message" => $record
+                    ]);
+                })->yearly();
+            }
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
+
+    /**
+     * Calculates the date/time when a fixed transaction should occur based on the scheduled_date field.
+     *
+     * @param string $scheduledDate
+     * @return string
+     */
+    private function calculateScheduledDate($scheduledDate)
+    {
+        $now = now();
+        switch ($scheduledDate) {
+            case 'year':
+                $date = $now->addYear();
+                break;
+            case 'month':
+                $date = $now->addMonth();
+                break;
+            case 'week':
+                $date = $now->addWeek();
+                break;
+            case 'day':
+                $date = $now->addDay();
+                break;
+            case 'hour':
+                $date = $now->addHour();
+                break;
+            default:
+                $date = $now;
+                break;
+        }
+        return $date;
+    }
+
 
 
     public function delete($id)
@@ -106,6 +191,7 @@ class FixedController extends Controller
 
     //get all expenses
     public function show() //get Fixed
+
     {
         try {
             $fixed = FixedModel::all();
@@ -172,41 +258,41 @@ class FixedController extends Controller
     }
 
     public function getByTitle($title)
-{
-    try {
-        $fixed = FixedModel::where('title', $title)->get();
+    {
+        try {
+            $fixed = FixedModel::where('title', $title)->get();
 
-        if ($fixed->isEmpty()) {
+            if ($fixed->isEmpty()) {
+                return response()->json([
+                    'error' => 'No fixed expenses found with the specified title',
+                ], 404);
+            }
+
             return response()->json([
-                'error' => 'No fixed expenses found with the specified title',
-            ], 404);
+                'fixed' => $fixed,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An error occurred while fetching fixed expenses',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'fixed' => $fixed,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'An error occurred while fetching fixed expenses',
-            'message' => $e->getMessage(),
-        ], 500);
     }
-}
 
-public function filter($filter, $value)
-{
-    switch ($filter) {
-        case 'title':
-            return $this->getByTitle($value);
-        case 'key_id':
-            return $this->getByKeyId($value);
-        case 'id':
-         return $this->getFixedById($value);
-        default:
-            return response()->json([
-                'error' => 'Invalid filter specified',
-            ], 400);
+    public function filter($filter, $value)
+    {
+        switch ($filter) {
+            case 'title':
+                return $this->getByTitle($value);
+            case 'key_id':
+                return $this->getByKeyId($value);
+            case 'id':
+                return $this->getFixedById($value);
+            default:
+                return response()->json([
+                    'error' => 'Invalid filter specified',
+                ], 400);
+        }
     }
-}
 
 }

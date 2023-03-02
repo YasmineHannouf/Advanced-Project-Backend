@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fixed_Keys', function (Blueprint $table){
+        Schema::create('fixedKeys', function (Blueprint $table){
             $table->id();
             $table->string('name')->unique();
             $table->boolean('is_active')->default(true);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fixed_Keys');
+        Schema::dropIfExists('fixedKeys');
     }
 };
