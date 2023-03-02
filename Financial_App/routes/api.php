@@ -5,9 +5,9 @@ use App\Http\Controllers\ReccuringController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\adminsController;
+use App\Http\Controllers\ProfitGoalsController;
 use App\Http\Controllers\FixedController;
 use App\Http\Controllers\Fixedkey;
-use App\Http\Middleware\Authenticate;
 
 
 Route::Get('/admins',[adminsController::class,'Getadmins']);
@@ -64,6 +64,12 @@ Route::post('/login',[adminsController::class,'login']);
 Route::post('api/login', 'AuthController@login')->name('api/login');
 
 
+
+
+Route::Get('/profit_goals',[ProfitGoalsController::class,'Get_Profit_Goals']);
+Route::Post('/profit_goals',[ProfitGoalsController::class,'Post_Profit_Goals']);
+Route::Delete('/profit_goals/{id}',[ProfitGoalsController::class,'Delete_Profit_Goals']);
+Route::patch('/profit_goals/{id}',[ProfitGoalsController::class,'Edit_Profit_Goals']);
 Route::middleware('auth:')->group(function () {
     Route::get('/fixed/show',[FixedController::class,'show']);
     Route::get('/logout',[adminsController::class,'logout']);
