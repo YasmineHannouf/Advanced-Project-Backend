@@ -1,14 +1,26 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Fixedkey as Fixedkeys;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 
-class CategoryController extends Controller
+class Fixedkey extends Controller
 {
+    public function show()
+  {
+    try {
+      $nameByDesc = Fixedkeys::get();
+      return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
 
+    } catch (\Throwable $th) {
+      return response()->json([
+        'status' => false,
+        'Error' => $th->getMessage()
+
+      ], 500);
+    }
+  }
 
   public function store(Request $request)
   {
@@ -16,16 +28,18 @@ class CategoryController extends Controller
       $request->validate([
 
         'name' => 'required|string|max:255',
+        // 'is_active' => 'required|string|max:255',
       ]);
 
-      $category = new Category;
-      $category->name = $request->name;
-      $category->save();
+      $Fixed_keys = new Fixedkeys;
+      $Fixed_keys->name = $request->name;
+      $Fixed_keys->is_active = $request->is_active;
+      $Fixed_keys->save();
 
    return response()->json([
         'status' => true,
-        'message' => 'Category created.',
-        'data' => $category,
+        'message' => 'Fixed_keys created.',
+        'data' => $Fixed_keys,
 
       ], 201, );
     } catch (\Throwable $th) {
@@ -45,10 +59,10 @@ class CategoryController extends Controller
     try {
       $updateFields = [];
       $updateFields['name'] = $request->input('name');
-      $category = Category::findorFail($id);
-      $category->update($updateFields);
-      echo $category;
-      $updateFields = $category->fresh();
+      $Fixed_keys = Fixedkeys::findorFail($id);
+      $Fixed_keys->update($updateFields);
+      echo $Fixed_keys;
+      $updateFields = $Fixed_keys->fresh();
       return response()->json([
 
         'status' => true,
@@ -70,8 +84,8 @@ class CategoryController extends Controller
   {
 
     try {
-      $category = Category::findorFail($id);
-      $category->delete();
+      $Fixed_keys = Fixedkeys::findorFail($id);
+      $Fixed_keys->delete();
       return response()->json(['Status' => true, 'Message' => 'Deleted Successfully'], 200);
     } catch (\Throwable $th) {
       return response()->json([
@@ -86,8 +100,8 @@ class CategoryController extends Controller
   public function sortByNameDesc()
   {
     try {
-      $nameByDesc = Category::orderBy('name', 'desc')->get();
-      return response()->json(['Status' => true, 'CategoryByDesc' => $nameByDesc], 200);
+      $nameByDesc = Fixedkeys::orderBy('name', 'desc')->get();
+      return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
 
     } catch (\Throwable $th) {
       return response()->json([
@@ -101,23 +115,8 @@ class CategoryController extends Controller
   public function sortByNameAsc()
   {
     try {
-      $nameByDesc = Category::orderBy('name', 'Asc')->get();
-      return response()->json(['Status' => true, 'CategoryByDesc' => $nameByDesc], 200);
-
-    } catch (\Throwable $th) {
-      return response()->json([
-        'status' => false,
-        'Error' => $th->getMessage()
-
-      ], 500);
-    }
-  }
-
-  public function show()
-  {
-    try {
-      $nameByDesc = Category::get();
-      return response()->json(['Status' => true, 'CategoryByDesc' => $nameByDesc], 200);
+      $nameByDesc = Fixedkeys::orderBy('name', 'Asc')->get();
+      return response()->json(['Status' => true, 'Fixed_keysByDesc' => $nameByDesc], 200);
 
     } catch (\Throwable $th) {
       return response()->json([

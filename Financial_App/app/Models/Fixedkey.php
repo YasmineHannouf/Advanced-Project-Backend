@@ -5,19 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+class Fixedkey extends Model
+{    protected $table = 'fixedKeys';
 
-class Category extends Model
-{
     use HasFactory;
-
     protected $fillable= [
         'id',
         'name',
+        'is_active'
     ];
-    public function ReccuringCategory()
-    {
-        return $this->hasMany(RecurringModel::class);
-    }    public function FixedCategory()
+     public function fixedCategory()
     {
         return $this->hasMany(FixedModel::class);
     }
