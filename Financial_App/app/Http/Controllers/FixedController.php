@@ -28,6 +28,19 @@ class FixedController extends Controller
                 'type' => ['required', Rule::in(['inc', 'exp'])],
                 'schedule_date' => 'required|in:year,month,week,day,hour'
             ]);
+
+            $validatedData = $request->except('_method');
+
+            $validatedData['date_time'] = now();
+            $fixed = FixedModel::create($validatedData);
+            $fixed->category_id = $request->category_id;
+            $fixed->category()->associate("category_id");
+            $fixed->category_id = $request->category_id;
+            $fixed->fix()->associate("key_id");
+
+            return response()->json([
+                "message " => $fixed
+            ]);
             $validatedData['date_time']= now();
             $record = new FixedModel($validatedData);
             $record->save();
@@ -87,6 +100,7 @@ class FixedController extends Controller
                     ]);
                 })->yearly();
             }
+
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -194,7 +208,7 @@ class FixedController extends Controller
 
     {
         try {
-            $fixed = FixedModel::all();
+            $fixed = FixedModel::paginate(10);             //all()
 
             if ($fixed->isEmpty()) {
                 return response()->json([

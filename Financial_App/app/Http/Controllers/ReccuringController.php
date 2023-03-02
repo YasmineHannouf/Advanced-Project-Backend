@@ -12,7 +12,7 @@ class ReccuringController extends Controller
     public function show(Request $request)
     {
         try {
-            $Recurring = Reccuring::with('category')->get();
+            $Recurring = Reccuring::with('category')->paginate(10);
             return response()->json([
                 'status' => true,
                 'message' => 'This outcome',

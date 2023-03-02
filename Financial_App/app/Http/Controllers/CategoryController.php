@@ -113,12 +113,23 @@ class CategoryController extends Controller
     }
   }
 
-  public function show()
+  public function show(Request $request)
   {
     try {
-      $nameByDesc = Category::get();
-      return response()->json(['Status' => true, 'CategoryByDesc' => $nameByDesc], 200);
+        $pageNumber = $request->query("page");
+        $perPage = $request->query("per_page");
 
+        if ($pageNumber) {
+            $category = Category::paginate($perPage || 10, ['*'], 'page', $pageNumber);
+        } else {
+            $category = Category::all();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Categories retrieved successfully',
+            'data' => $category,
+        ], 200);
     } catch (\Throwable $th) {
       return response()->json([
         'status' => false,
@@ -126,5 +137,28 @@ class CategoryController extends Controller
 
       ], 500);
     }
+  }
+
+  public function showPcategory()
+  {
+      try {
+
+
+
+              $category = Category::paginate(10);
+
+
+          return response()->json([
+              'status' => true,
+              'message' => 'Categories retrieved successfully',
+              'data' => $category,
+          ], 200);
+      } catch (\Throwable $th) {
+          return response()->json([
+              'status' => false,
+              'message' => 'Error retrieving categories',
+              'error' => $th->getMessage(),
+          ], 500);
+      }
   }
 }

@@ -16,7 +16,7 @@ class adminsController extends Controller
     public function Getadmins(Request $Request)
     {
         try {
-            $admin = Admins::get();
+            $admin = Admins::paginate(10);     //all()
 
             if(empty($admin)){return response()->json([
         'status' => false,
@@ -180,5 +180,7 @@ class adminsController extends Controller
         $cookie = Cookie::forget('jwt');
         return response(['Message' => "Good Bye"])->withCookie($cookie);
     }
+}
  
 }
+
