@@ -79,7 +79,6 @@ class ReccuringController extends Controller
 
             $recurring->save();
             return response()->json([
-                'message' => 'Recurring expense/income created successfully!',
                 'data' => $recurring
             ], 200);
         } catch (\Throwable $th) {

@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('description');
             $table->float('amount');
             $table->date('date_time');
-            $table->boolean('is_paid');
+            $table->boolean('is_paid')->default(true);
             $table->enum('type', ['inc', 'exp']);
             $table->enum('scheduled_date',['year', 'month', 'week', 'day','hour', 'minute', 'second']);
 
@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
 
             $table->unsignedBigInteger('key_id');
-            $table->foreign('key_id')->references('id')->on('fixed_Keys')->onDelete('cascade');
+            $table->foreign('key_id')->references('id')->on('fixedKeys')->onDelete('cascade');
 
             $table->timestamps();
         });
