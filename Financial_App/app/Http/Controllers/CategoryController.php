@@ -138,7 +138,39 @@ class CategoryController extends Controller
       ], 500);
     }
   }
-
+  public function GetCategoriesByName(Request $request){
+    try {
+        $name = request('name'); 
+    
+        $admin = Category::where(function ($query) use ($name) {
+                if ($name) {
+                    $query->where('name', 'LIKE', '%'.$name.'%');
+                }
+                
+            })
+            ->paginate(10);
+    
+        if ($admin->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No Categories found with the given search criteria',
+            ], 404);
+        }
+    
+        return response()->json([
+            'status' => true,
+            'message' => $admin,
+        ], 200);
+    } catch (\Exception $err) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Error while searching for admins',
+            'error' => $err->getMessage(),
+        ], 500);
+    }
+    
+    
+}
   public function showPcategory()
   {
       try {

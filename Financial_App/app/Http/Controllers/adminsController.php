@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\admins;
+use App\Models\Admins;
 use Storage;
 
 class adminsController extends Controller
@@ -16,38 +16,62 @@ class adminsController extends Controller
     public function Getadmins(Request $Request)
     {
         try {
-            $admin = Admins::paginate(10);     //all()
-
-            if(empty($admin)){return response()->json([
-        'status' => false,
-        'message' => 'No Admin found',
-    ], 404);}
+            $admin = Admins::paginate(10); //all()
+        
+            if ($admin->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No Admin found',
+                ], 404);
+            }
+        
             return response()->json([
-                "message" => $admin,
+                'status' => true,
+                'message' => $admin,
             ], 200);
         } catch (\Exception $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while updating income',
+                'message' => 'Error while retrieving admins',
                 'error' => $err->getMessage(),
             ], 500);
         }
+        
     }
-
-    public function login(Request $request)
-    {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response(['message' => 'Invalid credentials!' ], Response::HTTP_UNAUTHORIZED);
+public function GetAdminByName(Request $request){
+    try {
+        $name = request('name'); 
+    
+        $admin = Admins::where(function ($query) use ($name) {
+                if ($name) {
+                    $query->where('name', 'LIKE', '%'.$name.'%');
+                }
+                
+            })
+            ->paginate(10);
+    
+        if ($admin->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No admin found with the given search criteria',
+            ], 404);
         }
-
-        $admin = Auth::user();
-        $token = $admin->createToken('token')->plainTextToken;
-        $cookie = cookie('Authorisation', $token, 60 * 24);
-
-        return response(['message' => 'success', 'admin' => $admin], 200)->withCookie($cookie);
-
+    
+        return response()->json([
+            'status' => true,
+            'message' => $admin,
+        ], 200);
+    } catch (\Exception $err) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Error while searching for admins',
+            'error' => $err->getMessage(),
+        ], 500);
     }
-
+    
+    
+}
+  
     public function Postadmins(Request $Request)
     {
         try {
@@ -66,7 +90,7 @@ class adminsController extends Controller
                     'errors' => $validator->errors(),
                 ], 422);
             }
-            $admin = new admins;
+            $admin = new Admins;
             $name = $Request->input("name");
             $email = $Request->input("email");
             $password = hash::Make($Request->input("password"));
@@ -82,6 +106,7 @@ class adminsController extends Controller
             $admin->password = $password;
 
             $admin->save();
+            $admin->fresh();
 
             return response()->json([
                 "message" => "Admin created",
@@ -160,7 +185,11 @@ class adminsController extends Controller
                 $path = $image->storeAs('public/images', $filename);
                 $inputs['image'] = $filename;
             }
-            $admins->update($inputs);
+            DB::transaction(function () use ($admins, $inputs) {
+                $admins->update($inputs);
+                $admins->refresh();
+            });
+            
             return response()->json([
                 'message' => 'admins edited successfully!',
                 'admins' => $admins,
@@ -175,11 +204,5 @@ class adminsController extends Controller
     }
 
 
-    public function logout()
-    {
-        $cookie = Cookie::forget('jwt');
-        return response(['Message' => "Good Bye"])->withCookie($cookie);
-    }
+ 
 }
-
-

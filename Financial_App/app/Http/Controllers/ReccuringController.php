@@ -20,6 +20,12 @@ class ReccuringController extends Controller
         try {
             // $Recurring = reccuringModel::with('category')->get();
             $Recurring = Reccuring::with('category')->paginate(10);
+            if($Recurring->isEmpty()){ return response()->json([
+                'status' => false,
+                'message' => 'The Table is Empty',
+            
+
+            ]);}
             return response()->json([
                 'status' => true,
                 'message' => 'This outcome',
@@ -179,7 +185,7 @@ class ReccuringController extends Controller
             $reccuring->delete();
             return response()->json([
                 'status' => true,
-                'Message' => 'Successfully deleted reccuring'
+                'message' => 'Successfully deleted reccuring'
 
             ], 200);
         } catch (\Throwable $err) {
@@ -275,7 +281,7 @@ class ReccuringController extends Controller
     }
 
 
-    public function getFixedById($id)
+    public function getById($id)
     {
         try {
             $fixed = Reccuring::find($id);
@@ -296,10 +302,10 @@ class ReccuringController extends Controller
             ], 500);
         }
     }
-    public function getByKeyId($keyId)
+    public function getByType($keyId)
     {
         try {
-            $fixed = Reccuring::where('key_id', $keyId)->get();
+            $fixed = Reccuring::where('type', $keyId)->get();
 
             if ($fixed->isEmpty()) {
                 return response()->json([
@@ -318,17 +324,21 @@ class ReccuringController extends Controller
         }
     }
 
-    public function getByTitle($title)
+
+
+    public function getByTitle($filter, $value)
     {
         try {
-            $fixed = Reccuring::where('title', $title)->get();
-
+            $fixed = Reccuring::where(function ($query) use ($filter, $value) {
+                $query->where($filter, 'LIKE', '%' . $value . '%');
+            })->get();
+                
             if ($fixed->isEmpty()) {
                 return response()->json([
                     'error' => 'No fixed expenses found with the specified title',
                 ], 404);
             }
-
+    
             return response()->json([
                 'fixed' => $fixed,
             ]);
@@ -339,6 +349,8 @@ class ReccuringController extends Controller
             ], 500);
         }
     }
+    
+
 
 
     public function filter($filter, $value)
@@ -346,10 +358,8 @@ class ReccuringController extends Controller
         switch ($filter) {
             case 'title':
                 return $this->getByTitle($value);
-            case 'key_id':
-                return $this->getByKeyId($value);
             case 'id':
-                return $this->getFixedById($value);
+                return $this->getById($value);
             default:
                 return response()->json([
                     'error' => 'Invalid filter specified',

@@ -40,8 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+   
+    
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'admins',
+            'hash' => false,
+        ],
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -62,7 +69,7 @@ return [
     'providers' => [
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\admins::class,
+            'model' => App\Models\Admins::class,
         ],
 
         // 'users' => [
