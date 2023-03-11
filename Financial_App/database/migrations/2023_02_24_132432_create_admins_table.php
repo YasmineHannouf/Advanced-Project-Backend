@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('is_super');
             $table->string('email')->unique();
+            $table->string('tel');
             $table->string('password');
             $table->string('image')->nullable();
             $table->rememberToken();

@@ -27,7 +27,7 @@ class adminsController extends Controller
         
             return response()->json([
                 'status' => true,
-                'message' => $admin,
+                'data' => $admin,
             ], 200);
         } catch (\Exception $err) {
             return response()->json([
@@ -81,7 +81,8 @@ public function GetAdminByName(Request $request){
                 'email' => 'required|email|unique:admins,email,',
                 'password' => 'required|string|min:8',
                 'is_super' => 'required|boolean',
-                'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'tel'=>'required|string|'
 
             ]);
             if ($validator->fails()) {
@@ -94,6 +95,7 @@ public function GetAdminByName(Request $request){
             $admin = new Admins;
             $name = $Request->input("name");
             $email = $Request->input("email");
+            $tel = $Request->input("tel");
             $password = hash::Make($Request->input("password"));
             if ($Request->hasFile('image')) {
                 $image = $Request->file('image');
@@ -104,6 +106,7 @@ public function GetAdminByName(Request $request){
 
             $admin->name = $name;
             $admin->email = $email;
+            $admin->tel = $tel;
             $admin->password = $password;
 
             $admin->save();
@@ -154,6 +157,7 @@ public function GetAdminByName(Request $request){
                 'password' => 'sometimes|required|string|min:8|confirmed',
                 'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'is_super' => 'sometimes|required|boolean',
+                'tel'=>'sometimes|required|string|'
 
 
             ]);
@@ -172,6 +176,9 @@ public function GetAdminByName(Request $request){
             }
             if ($request->has('email')) {
                 $inputs['email'] = $request->input('email');
+            }
+             if ($request->has('tel')) {
+                $inputs['tel'] = $request->input('tel');
             }
             if ($request->has('password')) {
                 $password = hash::Make($request->input("password"));
@@ -195,7 +202,7 @@ public function GetAdminByName(Request $request){
             
             return response()->json([
                 'message' => 'admins edited successfully!',
-                'admins' => $admins,
+                'data' => $admins,
             ], 200);
         } catch (\Exception $err) {
             return response()->json([

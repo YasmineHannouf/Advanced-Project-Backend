@@ -15,7 +15,8 @@ class Admins extends Authenticatable implements AuthenticatableContract
         'name',
         'email',
         'password',
-        'image'
+        'image',
+        'tel'
     ];
 
     protected $hidden = [
