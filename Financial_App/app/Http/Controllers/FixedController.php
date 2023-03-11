@@ -21,86 +21,63 @@ class FixedController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
-                'amount' => 'required|numeric',
+                'amount' => 'required|numeric|min:0|not_in:0',
                 'category_id' => 'required|integer',
                 'key_id' => 'required|integer',
-                'is_paid' => 'required|boolean',
                 'type' => ['required', Rule::in(['inc', 'exp'])],
-                'schedule_date' => 'required|in:year,month,week,day,hour'
+                'scheduled_date' => 'required|in:year,month,week,day,hour'
             ]);
-
+    
             $validatedData = $request->except('_method');
-
+    
             $validatedData['date_time'] = now();
+            $validatedData['is_paid'] = true;
             $fixed = FixedModel::create($validatedData);
-            $fixed->category_id = $request->category_id;
-            $fixed->category()->associate("category_id");
-            $fixed->category_id = $request->category_id;
-            $fixed->fix()->associate("key_id");
-
+            $fixed->save(); // save the fixed model here
+    
+            if ($validatedData['scheduled_date'] == "hour") {
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                })->hourly();
+                
+                // return response()->json([
+                //     "message" => $fixed
+                // ]);
+            }
+    
+            if ($validatedData['scheduled_date'] == "day") {
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                })->daily();
+            }
+    
+            if ($validatedData['scheduled_date'] == "month") {
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                })->monthly();
+            }
+    
+            if ($validatedData['scheduled_date'] == "week") {
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                })->weekdays();
+            }
+    
+            if ($validatedData['scheduled_date'] == "year") {
+                $schedule->call(function () use ($validatedData) {
+                    $record = new FixedModel($validatedData);
+                    $record->save();
+                })->yearly();
+            }
+    
             return response()->json([
                 "message " => $fixed
             ]);
-            $validatedData['date_time']= now();
-            $record = new FixedModel($validatedData);
-            $record->save();
-        
-            if ($validatedData['schedule_date'] == "hour") {
-                $record=[];
-                $schedule->call(function () use ($validatedData) {
-                    $validatedData['date_time'] = 
-                    $record = new FixedModel($validatedData);
-                    $record->save();
-                    
-                })->hourly();
-                return response()->json([
-                    "message" => $record
-                ],200);
-            }
-            
-            if ($validatedData['schedule_date'] == "day") {
-                $record=[];
-                $schedule->call(function () use ($validatedData) {
-                    $record = new FixedModel($validatedData);
-                    $record->save();
-              
-                })->daily();
-                return response()->json([
-                    "message" => "record"
-                ],200);
-            }
-            
-            if ($validatedData['schedule_date'] == "month") {
-                $schedule->call(function () {
-                    $record = new FixedModel;
-                    $record->save();
-                    return response()->json([
-                        "message" => $record
-                    ]);
-                })->monthly();
-            }
-      
-            if ($validatedData['schedule_date'] == "week") {
-                $record=[];
-                $schedule->call(function () {
-                    $record = new FixedModel;
-                    $record->save();
-                   
-                })->weekdays();
-                
-            }
-      
-            if ($validatedData['schedule_date'] == "year") {
-                $record=[];
-                $schedule->call(function () {
-                    $record = new FixedModel;
-                    $record->save();
-                    return response()->json([
-                        "message" => $record
-                    ]);
-                })->yearly();
-            }
-
+    
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
@@ -108,6 +85,12 @@ class FixedController extends Controller
         }
     }
     
+    
+    
+    
+
+
+
 
     /**
      * Calculates the date/time when a fixed transaction should occur based on the scheduled_date field.
@@ -175,7 +158,7 @@ class FixedController extends Controller
             $validatedData = $request->validate([
                 'title' => 'sometimes|required|string|max:255',
                 'description' => 'sometimes|nullable|string',
-                'amount' => 'sometimes|required|numeric|min:0',
+                'amount' => 'sometimes|required|numeric|min:0|not_in:0',
                 'category_id' => 'sometimes|required|exists:categories,id',
                 'key_id' => 'sometimes|nullable|exists:keys,id',
                 'is_paid' => 'sometimes|required|boolean',
@@ -274,11 +257,12 @@ class FixedController extends Controller
     public function getByTitle($title)
     {
         try {
-            $fixed = FixedModel::where('title', $title)->get();
+            $fixed = FixedModel::where("title", $title)->get();
 
             if ($fixed->isEmpty()) {
                 return response()->json([
                     'error' => 'No fixed expenses found with the specified title',
+                    'fixed' => $fixed,
                 ], 404);
             }
 

@@ -80,6 +80,7 @@ public function GetAdminByName(Request $request){
                 'name' => 'required|string',
                 'email' => 'required|email|unique:admins,email,',
                 'password' => 'required|string|min:8',
+                'is_super' => 'required|boolean',
                 'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048'
 
             ]);
@@ -151,7 +152,9 @@ public function GetAdminByName(Request $request){
                 'name' => 'sometimes|required|string|max:255',
                 'email' => 'sometimes|required|string|email|max:255|unique:admins',
                 'password' => 'sometimes|required|string|min:8|confirmed',
-                'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'is_super' => 'sometimes|required|boolean',
+
 
             ]);
 

@@ -53,7 +53,7 @@ class ReccuringController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:20',
             'description' => 'string|max:1000',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:0|not_in:0',
             'category_id' => 'required|integer',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -108,7 +108,7 @@ class ReccuringController extends Controller
         $request->validate([
             'title' => 'sometimes|required|max:20',
             'description' => 'sometimes|required',
-            'amount' => 'sometimes|required|numeric',
+            'amount' => 'sometimes|required|numeric|min:0|not_in:0',
             'category_id' => 'sometimes|required|exists:categories,id',
             'start_date' => 'sometimes|required|date',
             'end_date' => 'sometimes|required|date|after_or_equal:start_date',
@@ -326,30 +326,7 @@ class ReccuringController extends Controller
 
 
 
-    public function getByTitle($filter, $value)
-    {
-        try {
-            $fixed = Reccuring::where(function ($query) use ($filter, $value) {
-                $query->where($filter, 'LIKE', '%' . $value . '%');
-            })->get();
-                
-            if ($fixed->isEmpty()) {
-                return response()->json([
-                    'error' => 'No fixed expenses found with the specified title',
-                ], 404);
-            }
-    
-            return response()->json([
-                'fixed' => $fixed,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'An error occurred while fetching fixed expenses',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-    
+ 
 
 
 

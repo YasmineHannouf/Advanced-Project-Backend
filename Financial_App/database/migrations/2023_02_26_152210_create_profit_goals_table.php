@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('profit_goals', function (Blueprint $table) {
             $table->id();
-            $table->integer('year');
-            $table->decimal('goal', 10, 2);
+            $table->string('title')->unique();
+            $table->decimal('goal', 16, 2)->change();
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();
             $table->timestamps();

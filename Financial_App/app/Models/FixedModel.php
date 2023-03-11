@@ -26,9 +26,9 @@ class FixedModel extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function fix()
+    public function fixedkey()
     {
-        return $this->belongsTo(Fixedkey::class);
+        return $this->belongsTo(Fixedkey::class,'key_id');
     }
 
 }

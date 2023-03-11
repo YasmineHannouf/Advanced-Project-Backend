@@ -14,9 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->float('amount');
+            $table->decimal('amount', 10, 2);
             $table->date('date_time');
-            $table->boolean('is_paid')->default(true);
+            $table->boolean('is_paid')->default(false);
             $table->enum('type', ['inc', 'exp']);
             $table->enum('scheduled_date',['year', 'month', 'week', 'day','hour', 'minute', 'second']);
 

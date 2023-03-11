@@ -59,6 +59,7 @@ class Fixedkey extends Controller
     try {
       $updateFields = [];
       $updateFields['name'] = $request->input('name');
+      $updateFields['is_active'] = $request->input('is_active');
       $Fixed_keys = Fixedkeys::findorFail($id);
       $Fixed_keys->update($updateFields);
       echo $Fixed_keys;

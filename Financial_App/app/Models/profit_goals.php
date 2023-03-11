@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class profit_goals extends Model
 {
     protected $fillable = [
-        'year',
+        'title',
         'goal',
         'start_date',
         'end_date',
