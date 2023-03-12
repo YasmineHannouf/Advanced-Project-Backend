@@ -80,7 +80,7 @@ public function GetAdminByName(Request $request){
                 'name' => 'required|string',
                 'email' => 'required|email|unique:admins,email,',
                 'password' => 'required|string|min:8',
-                'is_super' => 'required|boolean',
+                'is_super' => 'sometimes|required|boolean',
                 'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'tel'=>'required|string|'
 
@@ -97,6 +97,12 @@ public function GetAdminByName(Request $request){
             $email = $Request->input("email");
             $tel = $Request->input("tel");
             $password = hash::Make($Request->input("password"));
+            if ($Request->has('is_super')) {
+                $admin->is_super = $Request->input('is_super');
+            }
+            else{
+                $admin->is_super = 0;
+            }
             if ($Request->hasFile('image')) {
                 $image = $Request->file('image');
                 $filename = time() . '.' . $image->getClientOriginalExtension();
@@ -173,6 +179,8 @@ public function GetAdminByName(Request $request){
             $inputs = [];
             if ($request->has('name')) {
                 $inputs['name'] = $request->input('name');
+            }if ($request->has('is_super')) {
+                $inputs['is_super'] = $request->input('is_super');
             }
             if ($request->has('email')) {
                 $inputs['email'] = $request->input('email');
