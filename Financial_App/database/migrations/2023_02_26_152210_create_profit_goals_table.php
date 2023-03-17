@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('profit_goals', function (Blueprint $table) {
             $table->id();
             $table->string('title')->unique();
-            $table->decimal('goal', 16, 2)->change();
+            $table->decimal('goals', 16, 2);
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();
             $table->timestamps();

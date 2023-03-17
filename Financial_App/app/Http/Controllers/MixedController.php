@@ -46,11 +46,11 @@ class MixedController extends Controller
             $recurringIncomes = Reccuring::where('type', 'inc')->with('category')->get();
             $recurringExpenses = Reccuring::where('type', 'exp')->with('category')->get();
             $fixedIncomes = FixedModel::where('type', 'inc')
-            ->where('s_paid', true)
+            ->where('is_paid', true)
             ->with('category', 'fixedkey')
             ->get();         
             $fixedExpenses = FixedModel::where('type', 'exp')
-            ->where('s_paid', true)
+            ->where('is_paid', true)
             ->with('category', 'fixedkey')
             ->get();
             $recurringTotalIncome = $recurringIncomes->sum('amount');
