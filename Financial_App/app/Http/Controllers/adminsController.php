@@ -124,7 +124,7 @@ public function GetAdminByName(Request $request){
         } catch (\Exception $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while updating income',
+                'message' => 'Error while updating Admin',
                 'error' => $err->getMessage(),
             ], 500);
         }
@@ -143,7 +143,7 @@ public function GetAdminByName(Request $request){
         } catch (\Exception $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while updating income',
+                'message' => 'Error while updating Admins!',
                 'error' => $err->getMessage(),
             ], 500);
         }
@@ -215,7 +215,7 @@ public function GetAdminByName(Request $request){
         } catch (\Exception $err) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error while updating income',
+                'message' => 'Error while updating Admin',
                 'error' => $err->getMessage(),
             ], 500);
         }
