@@ -56,7 +56,7 @@ class ProfitGoalsController extends Controller
             $end_date = $Request->input("end_date");
 
              $ProfitGoal->title = $title;
-             $ProfitGoal->goal = $goal;
+             $ProfitGoal->goals = $goal;
              $ProfitGoal->start_date = $start_date;
              $ProfitGoal->end_date = $end_date;
 

@@ -21,9 +21,9 @@ class AuthController extends Controller
 
         $admin = Auth::user();
         $token = $admin->createToken('token')->plainTextToken;
-        $cookie = cookie('Authorisation', $token, 60 * 24);
+        $cookie = cookie('Authorisation', $token, 60 * 24, null, null, false, true);
 
-        return response(['message' => 'success', 'admin' => $admin], 200)->withCookie($cookie);
+        return response(['message' => 'success', 'admin' => $admin,'token'=>$token], 200)->withCookie($cookie);
 
     }
     public function __construct() {

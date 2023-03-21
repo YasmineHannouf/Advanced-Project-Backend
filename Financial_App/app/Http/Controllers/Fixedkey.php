@@ -24,32 +24,61 @@ class Fixedkey extends Controller
 
   public function store(Request $request)
   {
-    try {
-      $request->validate([
-
-        'name' => 'required|string|max:255',
-        // 'is_active' => 'required|string|max:255',
-      ]);
-
-      $Fixed_keys = new Fixedkeys;
-      $Fixed_keys->name = $request->name;
-      $Fixed_keys->is_active = $request->is_active;
-      $Fixed_keys->save();
-
-   return response()->json([
-        'status' => true,
-        'message' => 'Fixed_keys created.',
-        'data' => $Fixed_keys,
-
-      ], 201, );
-    } catch (\Throwable $th) {
-      return response()->json([
-        'status' => false,
-        'Error' => $th->getMessage()
-
-      ], 500);
-    }
+      try {
+          $request->validate([
+              'name' => 'required|string|max:255',
+              'is_active' => 'boolean',
+          ]);
+         
+          $Fixed_keys = new Fixedkeys;
+          $Fixed_keys->name = $request->name;
+          $is_active = filter_var($request->input('is_active'), FILTER_VALIDATE_BOOLEAN);
+          $Fixed_keys->is_active = $is_active;
+          $Fixed_keys->save();
+  
+          return response()->json([
+              'status' => true,
+              'message' => 'Fixed_keys created.',
+              'data' => $Fixed_keys,
+          ], 201);
+      } catch (\Throwable $th) {
+          return response()->json([
+              'status' => false,
+              'Error' => $th->getMessage()
+          ], 500);
+      }
   }
+  //  public function store(Request $request)
+  // {
+  //   try {
+  //     $request->validate([
+
+  //       'name' => 'required|string|max:255',
+  //       'is_active' => 'boolean|',
+  //     ]);
+   
+  //     $Fixed_keys = new Fixedkeys;
+  //     $Fixed_keys->name = $request->name;
+  //     if ($request->has('is_active')) {
+  //       $Fixed_keys['is_active'] = $request->input('is_active');
+  //   }
+  //     else $Fixed_keys->is_active = 1;
+  //     $Fixed_keys->save();
+
+  //  return response()->json([
+  //       'status' => true,
+  //       'message' => 'Fixed_keys created.',
+  //       'data' => $Fixed_keys,
+
+  //     ], 201, );
+  //   } catch (\Throwable $th) {
+  //     return response()->json([
+  //       'status' => false,
+  //       'Error' => $th->getMessage()
+
+  //     ], 500);
+  //   }
+  // }
 
 
 
